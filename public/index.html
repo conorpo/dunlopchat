@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Join the Chat</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="centered-form__form">
+            <form action="/chat.html">
+                <div class="form-field">
+                    <h3>Join a chat</h3>
+                </div>
+                <div class="form-field">
+                    <label> Display Name </label>
+                    <input type="text" name="name" autofocus>
+                </div>
+                <div class="form-field">
+                    <label> Room Code </label>
+                    <input type="text" name="room" value="main">
+                </div>
+                <div class="form-field">
+                    <label> User Color </label>
+                    <div class="colorsec">
+                        <input oninput="toggleColor()" type="checkbox" id="random" name="random" value="random" checked="true">
+                        <label  for="random" class="colorlabel">Random</label>
+                    </div>
+                    <div class="colorsec">
+                        <input disabled class="yesrandom" type="color" id="color" name="color" value="#FF0000">
+                        <label id="colorl" class="colorlabel yesrandom" for="color">Color</label>
+                    </div>
+                </div>
+                <div id="admin" class="form-field hidden">
+                    <label> Admin Code </label>
+                    <input type="text" name="pass" value="">
+                </div>
+                <div class="form-field">
+                    <button class="fancy">Join</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+    let colorinput = document.getElementById('color');
+    let colorlabel = document.getElementById('colorl');
+    let checkboxinput = document.getElementById('random');
+    function toggleColor(){
+        if(checkboxinput.checked){
+            colorinput.classList.add('yesrandom');
+            colorlabel.classList.add('yesrandom');
+            colorinput.disabled=true;
+        }else{
+            colorinput.classList.remove('yesrandom');
+            colorlabel.classList.remove('yesrandom');
+            colorinput.disabled=false;
+        }
+    }
+    document.getElementById('random').addEventListener('keydown', e => {
+        console.log(e.key);
+        if (e.key === '`') document.getElementById('admin').classList.remove('hidden');
+    })
+</script>
