@@ -110,9 +110,11 @@ io.on('connection',(socket) => {
             const message = (typeof messageP === 'object') ?
                 messageG(user.name, false , user.color, messageP.url) :
                 messageG(user.name, messageP, user.color);
-            fs.appendFile(path.join(__dirname, 'chatLogs', roomId + '.txt'), `[${message.createdAt}] ${message.name}: ${message.text || message.url} \n`, (err) => {
-                if (err) console.log(err);
-            });
+            if(tracked.includes(roomId)) {
+                fs.appendFile(path.join(__dirname, 'chatLogs', roomId + '.txt'), `[${message.createdAt}] ${message.name}: ${message.text || message.url} \n`, (err) => {
+                    if (err) console.log(err);
+                });
+            }
             if (room.history) room.messageHistory.push(message);
             io.to(user.room).emit('newMessage', message);
         });

@@ -1,3 +1,3 @@
 module.exports = [
-    'dunlop'
+    'dunlop', 'dunlop2'
 ];
