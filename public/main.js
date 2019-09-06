@@ -64,7 +64,9 @@ let app = new Vue({
         }
     },
     mounted: function(){
-        socket.emit('join', deparam(window.location.search), function(err){
+        const params = deparam(window.location.search);
+                
+        socket.emit('join', params, function(err){
             console.log(err);
             if(typeof err === 'string'){
                 alert(err);
@@ -73,6 +75,9 @@ let app = new Vue({
                 document.getElementById('adminpanel').classList.add('active');
             }
         });
+
+        document.getElementById('title').innerText = `#${params.room}`;
+
         var div = document.createElement('div');
         this.can = (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window;
         const upload = document.getElementsByClassName('box')[0];
