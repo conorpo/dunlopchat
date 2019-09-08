@@ -21,9 +21,10 @@
                     <li v-for="user in users" :style="{ color: user.color}"> {{user.name}} </li>
                 </ol>
                 <div class="admin__panel" id="adminpanel">
-                    <button @click="toggleChatHistory">Chat History</button> <span> {{chatHistory}} </span>
+                    <button @click="toggleChatHistory(false)">Chat History</button> <span> {{chatHistory}} </span>
                     <button @click="seeChatHistory">See Full Chat Log</button>
-                    <button @click="toggleChatLock">Lock Chat</button> <span> {{locked}} </span>
+                    <button @click="toggleChatLock(false)">Lock Chat</button> <span> {{locked}} </span>
+                    <button @click="emergency">EMERGENCY: Clear Chat for Everyone and Lock Chat</button>
                 </div>
             </div>
             <div class="chat__main">

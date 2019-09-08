@@ -49,30 +49,36 @@ let app = new Vue({
                 app.classList.remove('active');
             }
         },
-        toggleChatHistory: function() {
-            socket.emit('toggleChatHistory', (status) => {
+        toggleChatHistory: function(read = false) {
+            socket.emit('toggleChatHistory', read, (status) => {
                 this.chatHistory = status;
             })
         },
-        toggleChatLock: function() {
-            socket.emit('toggleChatLock', (status) => {
+        toggleChatLock: function(read = false) {
+            socket.emit('toggleChatLock', read, (status) => {
                 this.locked = status;
             })
         },
         seeChatHistory: function() {
             window.location.href = window.location.origin + '/chatLogs/' + deparam(window.location.search).room;
-        }
+        },
+        emergency: function() {
+            socket.emit('emergency', (status) => {
+                this.locked = status;
+            });
+        },
     },
     mounted: function(){
         const params = deparam(window.location.search);
                 
-        socket.emit('join', params, function(err){
-            console.log(err);
+        socket.emit('join', params, (err) => {
             if(typeof err === 'string'){
                 alert(err);
                 window.location.href = "/";
             }else if(err === true){
                 document.getElementById('adminpanel').classList.add('active');
+                this.toggleChatHistory(true);
+                this.toggleChatLock(true);
             }
         });
 
@@ -174,6 +180,10 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', addMessage);
+
+socket.on('clearChat', () => {
+    app.messages = [];
+})
 
 function addMessage(message) {
     if(message.url) {

@@ -130,9 +130,10 @@ io.on('connection',(socket) => {
         if (admin) {
             callback(true);
             console.log('Admin joined for room ' + roomId);
-            socket.on("toggleChatHistory", (callback) => {
+            socket.on("toggleChatHistory", (get, cb) => {
+                if (get) return cb(room.history);
                 room.history = !room.history;
-                callback(room.history);
+                cb(room.history);
                 if(room.history) {
                     room.timeout = setTimeout(() => {
                         room.messageHistory = [];
@@ -143,14 +144,26 @@ io.on('connection',(socket) => {
                     clearTimeout(room.timeout);
                 } 
             });
-            socket.on("toggleChatLock", callback => {
+            socket.on("toggleChatLock", (get, cb) => {
+                if (get) return cb(room.locked);
                 room.locked = !room.locked;
-                callback(room.locked);
+                cb(room.locked);
                 if(room.locked) {
                     io.to(roomId).emit('newMessage', messageG('Admin', 'The chatroom has been locked'));
                 } else {
                     io.to(roomId).emit('newMessage', messageG('Admin', 'The chatroom has been unlocked'));
                 }
+            })
+            socket.on("emergency", cb => {
+                if (!room.locked) room.locked = !room.locked;
+                room.messageHistory = [];
+                cb(room.locked);
+                if(room.locked) {
+                    io.to(roomId).emit('newMessage', messageG('Admin', 'The chatroom has been locked'));
+                } else {
+                    io.to(roomId).emit('newMessage', messageG('Admin', 'The chatroom has been unlocked'));
+                }
+                io.to(roomId).emit('clearChat');
             })
         }
     });
