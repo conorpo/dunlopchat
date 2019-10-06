@@ -77,7 +77,7 @@ app.use(express.static(publicPath));
 io.on('connection',(socket) => {
     console.log("New connectipn: " + socket.id);
     socket.on('join', (params, callback) => {
-        const roomId = params.room;
+        const roomId = params.room.toLowerCase().trim();
 
         if(!isRealString(params.name) || !isRealString(roomId)){
             return callback('Name and room name are required');
@@ -106,6 +106,7 @@ io.on('connection',(socket) => {
         socket.broadcast.to(roomId).emit('newMessage',messageG('Admin', params.name + " has joined the server"));
 
         socket.on('createMessage', (messageP, callback) => {
+            console.log(room.messageHistory.map(obj => obj.url));
             if (room.locked && !admin) return callback('Room Locked');
             const message = (typeof messageP === 'object') ?
                 messageG(user.name, false , user.color, messageP.url) :

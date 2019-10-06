@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-field">
                     <label> Room Code </label>
-                    <input type="text" name="room" value="main">
+                    <input id="room" type="text" name="room" value="main">
                 </div>
                 <div class="form-field">
                     <label> User Color </label>
@@ -43,6 +43,25 @@
 </html>
 
 <script type="text/javascript">
+    function deparam(uri){
+        if(uri === undefined){
+        uri = window.location.search;
+        }
+        var queryString = {};
+        uri.replace(
+        new RegExp(
+            "([^?=&]+)(=([^&#]*))?", "g"),
+            function($0, $1, $2, $3) {
+                queryString[$1] = decodeURIComponent($3.replace(/\+/g, '%20'));
+            }
+        );
+        return queryString;
+    };
+
+    const room = deparam(window.location.search).room;
+    if(room) {
+        document.getElementById('room').value = room.toLowerCase();
+    }
     let colorinput = document.getElementById('color');
     let colorlabel = document.getElementById('colorl');
     let checkboxinput = document.getElementById('random');

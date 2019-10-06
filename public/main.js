@@ -21,13 +21,17 @@ let app = new Vue({
     el: '#app',
     data: {
         currentMessage: '',
+        lastKey: '',
         username: deparam(window.location.search).name,
         users: [],
         messages: [],
         can: false,
         showing: false,
         locked: false,
-        chatHistory: false
+        chatHistory: false,
+        taggable: [],
+        tagging: false,
+        tagName: '@' + deparam(window.location.search).name.toLowerCase().replace(' ','')
     },
     methods: {
         sendMessage: function(){
@@ -35,6 +39,19 @@ let app = new Vue({
                 if(err) alert(err);
             });
             this.currentMessage = '';
+        },
+        tag: function(on){
+            if(on){
+                document.getElementById('tagArea').classList.add('show');
+                this.tagging = true;
+            } else {
+                this.tagging = false;
+                document.getElementById('tagArea').classList.remove('show');
+            }
+        },
+        tagPerson: function(name){
+            const index = this.currentMessage.lastIndexOf('@');
+            this.currentMessage = this.currentMessage.slice(0, index + 1) + name.replace(' ', '');
         },
         toggleUpload: function(){
             this.showing = !this.showing;
@@ -68,9 +85,19 @@ let app = new Vue({
             });
         },
     },
+    watch: {
+        currentMessage: function(val, oldVal) {
+            if (val.lastIndexOf('@') > val.lastIndexOf(' ')) {
+                this.tag(true);
+                const name = val.slice(val.lastIndexOf('@') + 1).toLowerCase();
+                this.taggable = this.users.filter(user => user.name.toLowerCase().replace(' ', '').includes(name)).slice(0, 5);
+            } else {
+                this.tag(false);
+            }
+        }
+    },
     mounted: function(){
         const params = deparam(window.location.search);
-                
         socket.emit('join', params, (err) => {
             if(typeof err === 'string'){
                 alert(err);
@@ -203,7 +230,7 @@ function addMessage(message) {
             }
         })
     } else {
-        app.messages.push(Object.assign(message,{id:app.messages.length}))
+        app.messages.push(Object.assign(message,{id:app.messages.length, highlight: message.text.toLowerCase().includes(app.tagName)}))
         let clientHeight = app.$refs.messages.clientHeight;
         let scrollTop = app.$refs.messages.scrollTop;
         let scrollHeight = app.$refs.messages.scrollHeight;

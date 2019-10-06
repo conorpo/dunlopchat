@@ -29,12 +29,15 @@
             </div>
             <div class="chat__main">
                 <ol ref="messages" class="chat__messages">
-                    <li class="message" v-for="message in messages" v-bind:ref="'message' + message.id">
+                    <li :class="{message: true, highlighted: message.highlight}" v-for="message in messages" v-bind:ref="'message' + message.id">
                         <b :style="{color: message.color}">{{message.name}}</b>: <span v-if="message.text">{{message.text}}</span>
                         <img v-if="message.url" v-bind:src="message.url" height=200>
                     </li>
                 </ol>
                 <div class="chat__footer">
+                    <div class="tag" id="tagArea">
+                        <li v-for="user in taggable" @click="tagPerson(user.name)">{{user.name}}</li>
+                    </div>
                     <input class="message" type="text" v-model:value="currentMessage" @keypress.enter="sendMessage" placeholder="Message">
                     <button class="fancy" @click="toggleUpload"> Upload Image</button>
                 </div>

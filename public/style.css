@@ -166,6 +166,7 @@ button.fancy:disabled {
   padding: 10px;
   /*height: 60px;*/
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .chat__footer form {
@@ -193,6 +194,11 @@ button.fancy:disabled {
   padding: 8px;
   padding-top:0px;
 }
+.highlighted {
+  background-color: #F6E0F6;
+  border-radius: 4px;
+}
+
 .colorsec{
     height:30px;
     float:left;
@@ -295,6 +301,31 @@ button.fancy:disabled {
 .box__success {
   -webkit-animation: appear-from-inside .25s ease-in-out;
   animation: appear-from-inside .25s ease-in-out;
+}
+
+.tag {
+  border: none;
+  flex-grow: 1;
+  padding: 5px;
+  display: none;
+  flex-basis: 100%;
+}
+
+.tag li {
+  width: 20%;
+  padding: 3px;
+  margin-bottom: 3px;
+  border-radius: 3px;
+}
+
+.tag li:hover {
+  cursor: pointer;
+  transform: translateX(3px);
+  background-color: rgba(255,255,255,.9)
+}
+
+.tag.show{
+  display: block;
 }
 
 @-webkit-keyframes appear-from-inside {
