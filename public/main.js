@@ -88,9 +88,10 @@ let app = new Vue({
     watch: {
         currentMessage: function(val, oldVal) {
             if (val.lastIndexOf('@') > val.lastIndexOf(' ')) {
-                this.tag(true);
                 const name = val.slice(val.lastIndexOf('@') + 1).toLowerCase();
                 this.taggable = this.users.filter(user => user.name.toLowerCase().replace(' ', '').includes(name)).slice(0, 5);
+                if('everyone'.includes(name)) {this.taggable.push({name:"everyone"})};
+                this.tag(true);
             } else {
                 this.tag(false);
             }
@@ -230,7 +231,9 @@ function addMessage(message) {
             }
         })
     } else {
-        app.messages.push(Object.assign(message,{id:app.messages.length, highlight: message.text.toLowerCase().includes(app.tagName)}))
+        app.messages.push(Object.assign(message,{id:app.messages.length, highlight: (
+            message.text.toLowerCase().includes(app.tagName) || message.text.toLowerCase().includes('@everyone')
+        )}));
         let clientHeight = app.$refs.messages.clientHeight;
         let scrollTop = app.$refs.messages.scrollTop;
         let scrollHeight = app.$refs.messages.scrollHeight;
