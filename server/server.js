@@ -106,7 +106,6 @@ io.on('connection',(socket) => {
         socket.broadcast.to(roomId).emit('newMessage',messageG('Admin', params.name + " has joined the server"));
 
         socket.on('createMessage', (messageP, callback) => {
-            console.log(room.messageHistory.map(obj => obj.url));
             if (room.locked && !admin) return callback('Room Locked');
             const message = (typeof messageP === 'object') ?
                 messageG(user.name, false , user.color, messageP.url) :
