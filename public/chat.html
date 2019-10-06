@@ -29,7 +29,7 @@
             </div>
             <div class="chat__main">
                 <ol ref="messages" class="chat__messages">
-                    <li :class="{message: true, highlighted: message.highlight}" v-for="message in messages" v-bind:ref="'message' + message.id">
+                    <li @dblclick="remove(message)" :class="{message: true, highlighted: message.highlight}" v-for="message in messages" v-bind:ref="'message' + message.id">
                         <b :style="{color: message.color}">{{message.name}}</b>: <span v-if="message.text">{{message.text}}</span>
                         <img v-if="message.url" v-bind:src="message.url" height=200>
                     </li>

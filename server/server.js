@@ -145,6 +145,10 @@ io.on('connection',(socket) => {
                     clearTimeout(room.timeout);
                 } 
             });
+            socket.on('delete', (name, text) => {
+                room.messageHistory.splice(room.messageHistory.findIndex(message => message.name == name && message.text == text), 1);
+                io.to(roomId).emit('removeMessage', name, text);
+            })
             socket.on("toggleChatLock", (get, cb) => {
                 if (get) return cb(room.locked);
                 room.locked = !room.locked;

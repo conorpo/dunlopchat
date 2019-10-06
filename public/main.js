@@ -31,6 +31,7 @@ let app = new Vue({
         chatHistory: false,
         taggable: [],
         tagging: false,
+        admin: false,
         tagName: '@' + deparam(window.location.search).name.toLowerCase().replace(' ','')
     },
     methods: {
@@ -84,6 +85,17 @@ let app = new Vue({
                 this.locked = status;
             });
         },
+        remove: function(message) {
+            if(this.admin) {
+                socket.emit('delete', message.name, message.text)
+            }
+        },
+        removeMessage: function(name, text)  {
+            const index = this.messages.findIndex(message => message.name == name && message.text == text);
+            if(index != -1) {
+                this.messages.splice(index, 1);
+            }
+        }
     },
     watch: {
         currentMessage: function(val, oldVal) {
@@ -105,6 +117,7 @@ let app = new Vue({
                 window.location.href = "/";
             }else if(err === true){
                 document.getElementById('adminpanel').classList.add('active');
+                this.admin = true;
                 this.toggleChatHistory(true);
                 this.toggleChatLock(true);
             }
@@ -212,6 +225,8 @@ socket.on('newMessage', addMessage);
 socket.on('clearChat', () => {
     app.messages = [];
 })
+
+socket.on('removeMessage', app.removeMessage)
 
 function addMessage(message) {
     if(message.url) {
